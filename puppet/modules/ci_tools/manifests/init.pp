@@ -14,9 +14,18 @@ class ci_tools {
   }
   include jenkins
   $ci_things = ['nginx', 'reprepro', 'python-virtualenv',
-                'rake', 'ruby']
+                'rake', 'ruby', 'ruby1.9.1-dev']
   package { $ci_things:
     ensure  => 'installed',
+  }
+  package { 'fpm':
+    ensure   => 'installed',
+    provider => 'gem',
+    require  => Package['ruby1.9.1-dev'],
+  }
+  package { 'puppet-lint':
+    ensure   => 'installed',
+    provider => 'gem',
   }
   service { 'nginx':
     ensure     => 'running',
@@ -54,13 +63,19 @@ class ci_tools {
                       'javadoc', 'subversion', 'translation', 'ant', 'cvs',
                       'external-monitor-job', 'git-client', 'ldap',
                       'maven-plugin', 'pam-auth', 'parameterized-trigger',
-                      'ssh-credentials', 'ssh-slaves',
+                      'ssh-credentials', 'ssh-slaves', 'postbuild-task',
                       'scm-sync-configuration', 'git-notes', 'credentials',
                       'shiningpanda']
   jenkins::plugin {
     $jenkins_plugins : ;
   }
   file { "${jenkins_home}/.ssh":
+    ensure  => 'directory',
+    notify  => Service['jenkins'],
+    require => Class['jenkins::package'],
+    owner   => 'jenkins',
+  }
+  file { "/var/deploys":
     ensure  => 'directory',
     notify  => Service['jenkins'],
     require => Class['jenkins::package'],
