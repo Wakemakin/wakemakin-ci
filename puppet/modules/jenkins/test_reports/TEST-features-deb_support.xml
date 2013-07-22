@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite errors="0" failures="2" name="Support adding Jenkins via Puppet on Debian machines" skipped="0" tests="2" time="0.014328">
+<testcase classname="Support adding Jenkins via Puppet on Debian machines" name="Install Jenkins via Puppet" time="0.004676">
+  <failure message="failed Install Jenkins via Puppet" type="failed">
+    <![CDATA[Scenario: Install Jenkins via Puppet
+
+Given I have a running Ubuntu VM
+And I have Puppet installed
+And the Jenkins module is on the machine
+Given the manifest:
+When I provision the machine
+Then I should have Jenkins installed
+
+Message:
+]]>
+    <![CDATA[undefined method `gsub' for nil:NilClass (NoMethodError)
+./features/step_definitions/deb_support_steps.rb:25:in `/^the Jenkins module is on the machine$/'
+features/deb_support.feature:10:in `And the Jenkins module is on the machine']]>
+  </failure>
+  <system-out/>
+  <system-err/>
+</testcase>
+<testcase classname="Support adding Jenkins via Puppet on Debian machines" name="Install the git plugin" time="0.009652">
+  <failure message="skipped Install the git plugin" type="skipped">
+    <![CDATA[Scenario: Install the git plugin
+
+]]>
+  </failure>
+  <system-out/>
+  <system-err/>
+</testcase>
+  <system-out>
+    <![CDATA[[default] - Enabling sandbox
+]]>
+  </system-out>
+  <system-err>
+    <![CDATA[]]>
+  </system-err>
+</testsuite>

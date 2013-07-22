@@ -1,0 +1,1 @@
+class { 'ci_tools': }
