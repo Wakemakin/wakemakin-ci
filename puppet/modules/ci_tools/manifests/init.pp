@@ -18,6 +18,10 @@ class ci_tools {
   package { $ci_things:
     ensure  => 'installed',
   }
+  package { 'puppet-lint':
+    ensure   => 'installed',
+    provider => 'gem',
+  }
   service { 'nginx':
     ensure     => 'running',
     enable     => true,
