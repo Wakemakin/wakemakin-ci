@@ -14,9 +14,14 @@ class ci_tools {
   }
   include jenkins
   $ci_things = ['nginx', 'reprepro', 'python-virtualenv',
-                'rake', 'ruby']
+                'rake', 'ruby', 'ruby1.9.1-dev']
   package { $ci_things:
     ensure  => 'installed',
+  }
+  package { 'fpm':
+    ensure   => 'installed',
+    provider => 'gem',
+    require  => Package['ruby1.9.1-dev'],
   }
   package { 'puppet-lint':
     ensure   => 'installed',
@@ -65,6 +70,12 @@ class ci_tools {
     $jenkins_plugins : ;
   }
   file { "${jenkins_home}/.ssh":
+    ensure  => 'directory',
+    notify  => Service['jenkins'],
+    require => Class['jenkins::package'],
+    owner   => 'jenkins',
+  }
+  file { "/var/deploys":
     ensure  => 'directory',
     notify  => Service['jenkins'],
     require => Class['jenkins::package'],
