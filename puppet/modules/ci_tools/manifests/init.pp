@@ -89,7 +89,7 @@ class ci_tools {
     owner   => 'jenkins',
     mode    => '0400',
   }
-  file { '${jenkins_home}/.ssh/faro-api-deploy':
+  file { '${jenkins_home}/.ssh/wakemakin-ci-deploy':
     ensure  => 'present',
     notify  => Service['jenkins'],
     source  => "${ciroot}/jenkins/ssh/wakemakin-ci-deploy",
