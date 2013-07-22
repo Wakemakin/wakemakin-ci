@@ -63,7 +63,7 @@ class ci_tools {
                       'javadoc', 'subversion', 'translation', 'ant', 'cvs',
                       'external-monitor-job', 'git-client', 'ldap',
                       'maven-plugin', 'pam-auth', 'parameterized-trigger',
-                      'ssh-credentials', 'ssh-slaves',
+                      'ssh-credentials', 'ssh-slaves', 'postbuild-task',
                       'scm-sync-configuration', 'git-notes', 'credentials',
                       'shiningpanda']
   jenkins::plugin {
