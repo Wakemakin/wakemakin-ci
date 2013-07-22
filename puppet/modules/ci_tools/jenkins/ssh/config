@@ -3,8 +3,15 @@ Host faro-api.github.com
 	User		git
 	IdentityFile	~/.ssh/faro-api-deploy
 	IdentitiesOnly	yes
+
 Host wakemakin-jenkins-backup.github.com
 	HostName	github.com
 	User		git
 	IdentityFile	~/.ssh/wakemakin-jenkins-backup-deploy
+	IdentitiesOnly	yes
+
+Host wakemakin-ci.github.com
+	HostName	github.com
+	User		git
+	IdentityFile	~/.ssh/wakemakin-ci-deploy
 	IdentitiesOnly	yes

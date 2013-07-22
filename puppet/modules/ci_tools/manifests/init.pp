@@ -81,10 +81,18 @@ class ci_tools {
     owner   => 'jenkins',
     mode    => '0400',
   }
-  file { '/var/lib/jenkins/.ssh/faro-api-deploy':
+  file { '${jenkins_home}/.ssh/faro-api-deploy':
     ensure  => 'present',
     notify  => Service['jenkins'],
     source  => "${ciroot}/jenkins/ssh/faro-api-deploy",
+    require => Class['jenkins::package'],
+    owner   => 'jenkins',
+    mode    => '0400',
+  }
+  file { '${jenkins_home}/.ssh/faro-api-deploy':
+    ensure  => 'present',
+    notify  => Service['jenkins'],
+    source  => "${ciroot}/jenkins/ssh/wakemakin-ci-deploy",
     require => Class['jenkins::package'],
     owner   => 'jenkins',
     mode    => '0400',
