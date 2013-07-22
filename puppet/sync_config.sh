@@ -14,3 +14,4 @@ if [ -d "$MODULE_DIR" ]; then
 fi
 cp -r $DIR/manifests $MANIFEST_DIR
 cp -r $DIR/modules $MODULE_DIR
+puppet apply $(puppet --configprint manifest)
