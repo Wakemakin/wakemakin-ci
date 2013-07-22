@@ -1,1 +1,4 @@
 *.swp
+modules/stdlib
+modules/jenkins
+modules/apt
