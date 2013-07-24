@@ -6,7 +6,7 @@ class ci_tools {
   }
   Exec['apt-update'] -> Package <| |>
   $ci_things = ['nginx', 'python-virtualenv', 'gnupg-agent',
-                'rake', 'ruby', 'ruby1.9.1-dev']
+                'rake', 'ruby', 'ruby1.9.1-dev', 'apache2-utils']
   package { $ci_things:
     ensure  => 'installed',
   }
@@ -18,12 +18,34 @@ class ci_tools {
     hasrestart => true,
     require    => Package['nginx'],
   }
+  file { '/etc/nginx/sites-available/freight':
+    ensure  => 'present',
+    notify  => Service['nginx'],
+    source  => "${ciroot}/nginx/sites-available/freight",
+    mode    => '0644',
+    require => Package['nginx'],
+  }
+  file { '/etc/nginx/sites-enabled/freight':
+    ensure  => 'link',
+    notify  => Service['nginx'],
+    target  => "${ciroot}/nginx/sites-available/freight",
+    require => Package['nginx'],
+  }
   file { '/etc/nginx/sites-available/jenkins':
     ensure  => 'present',
     notify  => Service['nginx'],
     source  => "${ciroot}/nginx/sites-available/jenkins",
     mode    => '0644',
     require => Package['nginx'],
+  }
+  file { '/etc/nginx/htpasswd':
+    ensure  => 'present',
+    notify  => Service['nginx'],
+    target  => "${ciroot}/nginx/htpasswd",
+    require => Package['nginx'],
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0640',
   }
   file { '/etc/nginx/sites-enabled/jenkins':
     ensure  => 'link',
@@ -131,14 +153,16 @@ class ci_tools {
   file { '/var/lib/freight':
     ensure  => 'directory',
     owner   => 'jenkins',
-    group   => 'jenkins',
-    recurse => true
+    group   => 'www-data',
+    mode    => '0755',
+    recurse => true,
   }
   file { '/var/cache/freight':
     ensure  => 'directory',
     owner   => 'jenkins',
-    group   => 'jenkins',
-    recurse => true
+    group   => 'www-data',
+    mode    => '0755',
+    recurse => true,
   }
   apt::source { 'freight_repo':
     location          => 'http://packages.rcrowley.org',
