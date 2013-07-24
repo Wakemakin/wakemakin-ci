@@ -1,32 +1,17 @@
 # /etc/puppet/modules/ci_tools/manifests/init.pp:
 class ci_tools {
   $ciroot = '/etc/puppet/modules/ci_tools'
-  $jenkins_home = '/var/lib/jenkins'
   exec { 'apt-update':
     command => '/usr/bin/apt-get update'
   }
   Exec['apt-update'] -> Package <| |>
-  user { 'jenkins':
-    ensure     => 'present',
-    managehome => true,
-    home       => '/var/lib/jenkins',
-    shell      => '/bin/bash',
-  }
-  include jenkins
-  $ci_things = ['nginx', 'reprepro', 'python-virtualenv',
+  $ci_things = ['nginx', 'python-virtualenv', 'gnupg-agent',
                 'rake', 'ruby', 'ruby1.9.1-dev']
   package { $ci_things:
     ensure  => 'installed',
   }
-  package { 'fpm':
-    ensure   => 'installed',
-    provider => 'gem',
-    require  => Package['ruby1.9.1-dev'],
-  }
-  package { 'puppet-lint':
-    ensure   => 'installed',
-    provider => 'gem',
-  }
+
+  # nginx settings
   service { 'nginx':
     ensure     => 'running',
     enable     => true,
@@ -55,6 +40,10 @@ class ci_tools {
     path   => '/usr/bin:/usr/sbin:/bin',
     onlyif => 'test `puppet module list | grep rtyler-jenkins | wc -l` -eq 0',
   }
+
+  # jenkins settings
+  include jenkins
+  $jenkins_home = '/var/lib/jenkins'
   $jenkins_plugins = ['jenkins-tracker', 'instant-messaging', 'ircbot',
                       'token-macro', 'github-api', 'github-oauth', 'github',
                       'git', 'git-chooser-alternative', 'greenballs',
@@ -66,8 +55,24 @@ class ci_tools {
                       'ssh-credentials', 'ssh-slaves', 'postbuild-task',
                       'scm-sync-configuration', 'git-notes', 'credentials',
                       'shiningpanda']
+  user { 'jenkins':
+    ensure     => 'present',
+    managehome => true,
+    home       => '/var/lib/jenkins',
+    shell      => '/bin/bash',
+  }
   jenkins::plugin {
     $jenkins_plugins : ;
+  }
+  package { 'fpm':
+    ensure   => 'installed',
+    provider => 'gem',
+    require  => Package['ruby1.9.1-dev'],
+  }
+  package { 'puppet-lint':
+    ensure   => 'installed',
+    provider => 'gem',
+    require  => Package['ruby1.9.1-dev'],
   }
   file { "${jenkins_home}/.ssh":
     ensure  => 'directory',
@@ -75,7 +80,7 @@ class ci_tools {
     require => Class['jenkins::package'],
     owner   => 'jenkins',
   }
-  file { "/var/deploys":
+  file { '/var/deploys':
     ensure  => 'directory',
     notify  => Service['jenkins'],
     require => Class['jenkins::package'],
@@ -111,5 +116,38 @@ class ci_tools {
     require => Class['jenkins::package'],
     owner   => 'jenkins',
     mode    => '0400',
+  }
+  #freight settings
+  file { '/etc/freight.conf':
+    ensure  => 'present',
+    source  => "${ciroot}/freight/freight.conf",
+    owner   => 'jenkins',
+  }
+  file { '/etc/apt/trusted.gpg.d/rcrowley.gpg':
+    ensure  => 'present',
+    source  => "${ciroot}/freight/rcrowley.gpg",
+    owner   => 'jenkins',
+  }
+  file { '/var/lib/freight':
+    ensure  => 'directory',
+    owner   => 'jenkins',
+    group   => 'jenkins',
+    recurse => true
+  }
+  file { '/var/cache/freight':
+    ensure  => 'directory',
+    owner   => 'jenkins',
+    group   => 'jenkins',
+    recurse => true
+  }
+  apt::source { 'freight_repo':
+    location          => 'http://packages.rcrowley.org',
+    release           => 'precise',
+    repos             => 'main',
+    required_packages => 'debian-keyring debian-archive-keyring',
+    include_src       => false
+  }
+  package { 'freight':
+    ensure => 'installed',
   }
 }

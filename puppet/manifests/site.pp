@@ -3,7 +3,7 @@
 node default {
   include sudo
   include basic
-  if 'jenkins' in $hostname {
+  if 'jenkins' in $::hostname {
     include ci_tools
   }
 }
