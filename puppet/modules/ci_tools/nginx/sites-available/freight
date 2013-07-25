@@ -24,9 +24,11 @@ server {
 	access_log	/var/log/nginx/freight.error.log;
 
 	location / {
-		auth_basic		"Restricted";
-		auth_basic_user_file	htpasswd;
 		root /var/cache/freight;
 		autoindex on;
+
+		allow 166.78.157.234;
+		allow 127.0.0.1;
+		deny all;
 	}
 }

@@ -39,13 +39,9 @@ class ci_tools {
     require => Package['nginx'],
   }
   file { '/etc/nginx/htpasswd':
-    ensure  => 'present',
+    ensure  => 'absent',
     notify  => Service['nginx'],
-    target  => "${ciroot}/nginx/htpasswd",
     require => Package['nginx'],
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0640',
   }
   file { '/etc/nginx/sites-enabled/jenkins':
     ensure  => 'link',
@@ -169,7 +165,24 @@ class ci_tools {
     release           => 'precise',
     repos             => 'main',
     required_packages => 'debian-keyring debian-archive-keyring',
-    include_src       => false
+    include_src       => false,
+  }
+  file { '/etc/apt/trusted.gpg.d/keyring.gpg':
+    ensure  => 'present',
+    source  => "${ciroot}/freight/keyring.gpg",
+    owner   => 'jenkins',
+  }
+  file { '/etc/apt/trusted.gpg.d/pubkey.gpg':
+    ensure  => 'present',
+    source  => "${ciroot}/freight/pubkey.gpg",
+    owner   => 'jenkins',
+  }
+  apt::source { 'local_repo':
+    location          => 'http://apt.jibely.com',
+    release           => 'saucy',
+    repos             => 'main',
+    required_packages => 'debian-keyring debian-archive-keyring',
+    include_src       => false,
   }
   package { 'freight':
     ensure => 'installed',
