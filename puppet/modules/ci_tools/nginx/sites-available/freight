@@ -28,6 +28,7 @@ server {
 		autoindex on;
 
 		allow 166.78.157.234;
+                allow 166.78.14.222;
 		allow 127.0.0.1;
 		deny all;
 	}
