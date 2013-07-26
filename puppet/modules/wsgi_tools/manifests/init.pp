@@ -5,8 +5,7 @@ class wsgi_tools {
     command => '/usr/bin/apt-get update'
   }
   Exec['apt-update'] -> Package <| |>
-  $wsgi_things = ['python-virtualenv', 'rake', 'ruby',
-                  'supervisor']
+  $wsgi_things = ['python-virtualenv', 'rake', 'ruby']
   package { $wsgi_things:
     ensure  => 'installed',
   }

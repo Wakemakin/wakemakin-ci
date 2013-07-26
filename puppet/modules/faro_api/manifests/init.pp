@@ -3,7 +3,7 @@ class faro_api {
   $ciroot = '/etc/puppet/modules/ci_tools'
   $faro_api_root = '/etc/puppet/modules/faro_api'
   $faro_api_things = ['faro-api']
-  package { $wsgi_things:
+  package { $faro_api_things:
     ensure  => 'installed',
   }
   file { '/etc/apt/trusted.gpg.d/keyring.gpg':
@@ -22,5 +22,12 @@ class faro_api {
     repos             => 'main',
     required_packages => 'debian-keyring debian-archive-keyring',
     include_src       => false,
+  }
+  supervisor::service {
+    'faro_api':
+      ensure  => present,
+      enable  => true,
+      command => '/opt/faro/faro-api/service-start.sh',
+      user    => 'faro',
   }
 }

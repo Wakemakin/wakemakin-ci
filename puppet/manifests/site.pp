@@ -7,6 +7,11 @@ node default {
     include ci_tools
   }
   if 'wsgi' in $::hostname {
+    class { 'supervisor':
+      conf_dir => '/etc/supervisor.conf.d',
+      conf_ext => '.conf',
+    }
+    include supervisor
     include wsgi_tools
     include faro_api
   }
