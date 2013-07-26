@@ -74,3 +74,4 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 rm -rf .venv
+chown -R :www-data $DEPLOYDIR
