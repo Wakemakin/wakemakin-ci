@@ -104,6 +104,12 @@ class ci_tools {
     require => Class['jenkins::package'],
     owner   => 'jenkins',
   }
+  file { '/opt/faro/':
+    ensure  => 'directory',
+    notify  => Service['jenkins'],
+    require => Class['jenkins::package'],
+    owner   => 'jenkins',
+  }
   file { "${jenkins_home}/.ssh/config":
     ensure  => 'present',
     notify  => Service['jenkins'],
