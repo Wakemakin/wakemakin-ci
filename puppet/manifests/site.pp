@@ -3,7 +3,7 @@
 node /jenkins/ {
     include sudo
     include basic
-    inckude ci_tools
+    include ci_tools
 }
 
 node /wsgi/ {
