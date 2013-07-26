@@ -12,6 +12,7 @@ node default {
       conf_ext => '.conf',
     }
     include supervisor
+    include mysql
     include wsgi_tools
     include faro_api
   }
