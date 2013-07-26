@@ -60,7 +60,7 @@ class ci_tools {
                       'maven-plugin', 'pam-auth', 'parameterized-trigger',
                       'ssh-credentials', 'ssh-slaves', 'postbuild-task',
                       'scm-sync-configuration', 'git-notes', 'credentials',
-                      'shiningpanda', 'ws-cleanup']
+                      'shiningpanda', 'ws-cleanup', 'multiple-scms']
   user { 'jenkins':
     ensure     => 'present',
     managehome => true,
