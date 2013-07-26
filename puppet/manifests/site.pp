@@ -1,12 +1,12 @@
 # /etc/puppet/manifests/site.pp
 
-node /jenkins/ {
-    include sudo
-    include basic
+node default {
+  include sudo
+  include basic
+  if 'jenkins' in $::hostname {
     include ci_tools
-}
-
-node /wsgi/ {
+  }
+  if 'wsgi' in $::hostname {
     class { 'supervisor':
       conf_dir => '/etc/supervisor.conf.d',
       conf_ext => '.conf',
@@ -15,4 +15,5 @@ node /wsgi/ {
     include mysql
     include wsgi_tools
     include faro_api
+  }
 }
