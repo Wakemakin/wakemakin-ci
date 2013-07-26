@@ -6,10 +6,10 @@ class basic {
   package { $basic_system:
     ensure => 'installed'
   }
-  file { "/etc/apt/apt.conf.d/99auth":       
+  file { '/etc/apt/apt.conf.d/99auth':
     owner     => 'root',
     group     => 'root',
-    content   => "APT::Get::AllowUnauthenticated yes;",
+    content   => 'APT::Get::AllowUnauthenticated yes;',
     mode      => '0644';
   }
   file { '/etc/apt/trusted.gpg.d/Release.gpg':
