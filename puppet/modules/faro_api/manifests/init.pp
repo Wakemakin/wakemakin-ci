@@ -2,9 +2,13 @@
 class faro_api {
   $ciroot = '/etc/puppet/modules/ci_tools'
   $faro_api_root = '/etc/puppet/modules/faro_api'
-  $faro_api_things = ['faro-api', 'libmysqlclient-dev']
+  $faro_api_things = ['libmysqlclient-dev']
   package { $faro_api_things:
     ensure  => 'installed',
+  }
+  package { 'faro-api':
+    ensure => 'latest',
+    notify => Exec['faro_api_kill'],
   }
   file { '/etc/faro':
     ensure  => 'directory',
@@ -32,9 +36,18 @@ class faro_api {
     source  => "${faro_api_root}/faro-api.conf",
     owner   => 'faro',
   }
-  exec { 'supervisorctl restart faro_api':
+  $status = 'supervisorctl status faro_api'
+  $sed = 'sed "s/.*[pid ]\([0-9]\+\)\,.*/\1/"'
+  exec { 'faro_api_kill':
+    command     => "${status} | ${sed} | xargs kill || true",
     subscribe   => File['/etc/faro/faro-api/faro-api.conf'],
-    path        => '/usr/local/bin/:/bin',
+    path        => '/usr/local/bin:/usr/bin:/bin',
+    refreshonly => true,
+    notify => Exec['faro_api_restart'],
+  }
+  exec { 'faro_api_restart':
+    command     => "supervisorctl restart faro_api",
+    path        => '/usr/local/bin:/usr/bin:/bin',
     refreshonly => true,
   }
   file { '/etc/apt/trusted.gpg.d/keyring.gpg':
@@ -60,6 +73,7 @@ class faro_api {
       enable  => true,
       command => '/opt/faro/faro-api/service-start.sh',
       user    => 'faro',
+      require => [ Package['faro-api'] ];
   }
   class { 'mysql::python': }
   class { 'mysql::server':
