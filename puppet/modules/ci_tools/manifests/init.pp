@@ -5,30 +5,23 @@ class ci_tools {
     command => '/usr/bin/apt-get update'
   }
   Exec['apt-update'] -> Package <| |>
-  $ci_things = ['nginx', 'python-virtualenv', 'gnupg-agent',
+  $ci_things = ['python-virtualenv', 'gnupg-agent',
                 'rake', 'ruby', 'ruby1.9.1-dev', 'apache2-utils']
   package { $ci_things:
     ensure  => 'installed',
   }
-
-  # nginx settings
-  service { 'nginx':
-    ensure     => 'running',
-    enable     => true,
-    hasrestart => true,
-    require    => Package['nginx'],
-  }
+  #nginx settings
   file { '/etc/nginx/sites-available/freight':
     ensure  => 'present',
     notify  => Service['nginx'],
     source  => "${ciroot}/nginx/sites-available/freight",
     mode    => '0644',
     require => Package['nginx'],
-  }
+  }->
   file { '/etc/nginx/sites-enabled/freight':
     ensure  => 'link',
     notify  => Service['nginx'],
-    target  => "${ciroot}/nginx/sites-available/freight",
+    target  => '/etc/nginx/sites-available/freight',
     require => Package['nginx'],
   }
   file { '/etc/nginx/sites-available/jenkins':
@@ -37,19 +30,14 @@ class ci_tools {
     source  => "${ciroot}/nginx/sites-available/jenkins",
     mode    => '0644',
     require => Package['nginx'],
-  }
-  file { '/etc/nginx/htpasswd':
-    ensure  => 'absent',
-    notify  => Service['nginx'],
-    require => Package['nginx'],
-  }
+  }->
   file { '/etc/nginx/sites-enabled/jenkins':
     ensure  => 'link',
     notify  => Service['nginx'],
-    target  => "${ciroot}/nginx/sites-available/jenkins",
+    target  => '/etc/nginx/sites-available/jenkins',
     require => Package['nginx'],
   }
-  file { '/etc/nginx/sites-available/default':
+  file { '/etc/nginx/htpasswd':
     ensure  => 'absent',
     notify  => Service['nginx'],
     require => Package['nginx'],

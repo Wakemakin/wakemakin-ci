@@ -14,10 +14,28 @@ class faro_api {
     ensure  => 'directory',
     owner   => 'faro',
   }
+  file { '/etc/nginx/sites-available/faro_site':
+    ensure  => 'present',
+    notify  => Service['nginx'],
+    source  => "${faro_api_root}/faro_site",
+    mode    => '0644',
+    require => Package['nginx'],
+  }->
+  file { '/etc/nginx/sites-enabled/faro_site':
+    ensure  => 'link',
+    notify  => Service['nginx'],
+    target  => '/etc/nginx/sites-available/faro_site',
+    require => Package['nginx'],
+  }
   file { '/etc/faro/faro-api/faro-api.conf':
     ensure  => 'present',
     source  => "${faro_api_root}/faro-api.conf",
     owner   => 'faro',
+  }
+  exec { 'supervisorctl restart faro_api':
+    subscribe   => File['/etc/faro/faro-api/faro-api.conf'],
+    path        => '/usr/local/bin/:/bin',
+    refreshonly => true,
   }
   file { '/etc/apt/trusted.gpg.d/keyring.gpg':
     ensure  => 'present',
