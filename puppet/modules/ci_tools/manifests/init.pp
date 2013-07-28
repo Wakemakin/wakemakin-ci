@@ -105,6 +105,14 @@ class ci_tools {
     require => Class['jenkins::package'],
     owner   => 'jenkins',
   }
+  file { "${jenkins_home}/.ssh/jenkins_ssh":
+    ensure  => 'present',
+    notify  => Service['jenkins'],
+    source  => "${ciroot}/jenkins/ssh/jenkins_ssh",
+    require => Class['jenkins::package'],
+    owner   => 'jenkins',
+    mode    => '0400',
+  }
   file { "${jenkins_home}/.ssh/wakemakin-jenkins-backup-deploy":
     ensure  => 'present',
     notify  => Service['jenkins'],
