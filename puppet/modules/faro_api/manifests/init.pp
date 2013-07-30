@@ -11,7 +11,6 @@ class faro_api {
   }
   package { 'faro-api':
     ensure => 'latest',
-    notify => Exec['faro_api_kill'],
   }
   file { '/etc/faro':
     ensure  => 'directory',
@@ -38,20 +37,6 @@ class faro_api {
     ensure  => 'present',
     source  => "${faro_api_root}/faro-api.conf",
     owner   => 'faro',
-  }
-  $status = 'supervisorctl status faro_api'
-  $sed = 'sed "s/.*[pid ]\([0-9]\+\)\,.*/\1/"'
-  exec { 'faro_api_kill':
-    command     => "${status} | ${sed} | xargs kill || true",
-    subscribe   => File['/etc/faro/faro-api/faro-api.conf'],
-    path        => '/usr/local/bin:/usr/bin:/bin',
-    refreshonly => true,
-    notify => Exec['faro_api_restart'],
-  }
-  exec { 'faro_api_restart':
-    command     => "supervisorctl restart faro_api",
-    path        => '/usr/local/bin:/usr/bin:/bin',
-    refreshonly => true,
   }
   file { '/etc/apt/trusted.gpg.d/keyring.gpg':
     ensure  => 'present',
