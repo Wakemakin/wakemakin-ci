@@ -24,12 +24,12 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 source "$VENV/bin/activate"
-pip install -r pip-requirements.txt
+pip install -r requirements/pip-requirements.txt
 if [ $? -ne 0 ]; then
   echo "Error pip install pip-requirements.txt"
   exit 1
 fi
-pip install -r test-requirements.txt
+pip install -r requirements/test-requirements.txt
 if [ $? -ne 0 ]; then
   echo "Error pip install test-requirements.txt"
   exit 1
