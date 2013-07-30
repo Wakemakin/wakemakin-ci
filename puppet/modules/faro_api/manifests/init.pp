@@ -2,6 +2,8 @@
 class faro_api {
   $ciroot = '/etc/puppet/modules/ci_tools'
   $faro_api_root = '/etc/puppet/modules/faro_api'
+  $api_root = '/opt/faro/faro-api'
+  $api_bin = "${api_root}/.venv/bin"
   $faro_api_things = ['libmysqlclient-dev']
   package { $faro_api_things:
     ensure  => 'installed',
@@ -69,11 +71,13 @@ class faro_api {
   }
   supervisor::service {
     'faro_api':
-      ensure  => present,
-      enable  => true,
-      command => '/opt/faro/faro-api/scripts/service-start.sh',
-      user    => 'faro',
-      require => [ Package['faro-api'] ];
+      ensure     => present,
+      enable     => true,
+      command    => "${api_bin}/gunicorn -c ${api_root}/gunicorn/conf.py",
+      directory  => "${api_root}i/",
+      user       => 'faro',
+      stopsignal => 'KILL',
+      require    => [ Package['faro-api'] ];
   }
   class { 'mysql::python': }
   class { 'mysql::server':
