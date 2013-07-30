@@ -7,7 +7,7 @@ echo "Waiting for children to die"
 PCOUNT=`ps aux | grep faro_api | grep gunicorn | wc -l`
 TIMEOUT=0
 MAX_TIMEOUT=35
-while [ $PCOUNT -ne 0]; do
+while [ $PCOUNT -ne 0 ]; do
     sleep 1
     PCOUNT=`ps aux | grep faro_api | grep gunicorn | wc -l`
     TIMEOUT=`expr $TIMEOUT + 1`
