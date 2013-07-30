@@ -1,3 +1,9 @@
+Host api.jibely.com
+	HostName	api.jibely.com
+	User		root
+	IdentityFile	~/.ssh/jenkins_ssh
+	IdentitiesOnly	yes
+
 Host faro-api.github.com
 	HostName	github.com
 	User		git
