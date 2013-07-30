@@ -74,7 +74,7 @@ class faro_api {
       ensure     => present,
       enable     => true,
       command    => "${api_bin}/gunicorn -c ${api_root}/gunicorn/conf.py",
-      directory  => "${api_root}i/",
+      directory  => "${api_root}/",
       user       => 'faro',
       stopsignal => 'KILL',
       require    => [ Package['faro-api'] ];
