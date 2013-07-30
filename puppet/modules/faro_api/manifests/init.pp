@@ -71,7 +71,7 @@ class faro_api {
     'faro_api':
       ensure  => present,
       enable  => true,
-      command => '/opt/faro/faro-api/service-start.sh',
+      command => '/opt/faro/faro-api/scripts/service-start.sh',
       user    => 'faro',
       require => [ Package['faro-api'] ];
   }
