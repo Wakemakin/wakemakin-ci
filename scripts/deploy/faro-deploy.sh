@@ -1,4 +1,6 @@
 #!/bin/bash
+# This script is run inside of the jenkins workspace
+# and not the directory of the target
 if [ -z "$PROJECT" ]; then
   echo "Project is undefined. Cannot continue"
   exit 1
@@ -38,6 +40,7 @@ pip install tox
 if [ ! -d "$DEPLOYDIR" ]; then
   mkdir -p "$DEPLOYDIR"
 fi
+echo $EXT_BUILD > "$WORKING/RELEASE"
 deactivate
 mv "$VENV" .venv
 outfile=`fpm -f -n "$PROJECT" -s dir -t deb -v 0.1 --iteration $EXT_BUILD\
