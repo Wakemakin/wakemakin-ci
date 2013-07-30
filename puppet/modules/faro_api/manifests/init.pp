@@ -11,6 +11,7 @@ class faro_api {
   }
   package { 'faro-api':
     ensure => 'latest',
+    notify => Exec['faro_api_restart'],
   }
   file { '/etc/faro':
     ensure  => 'directory',
@@ -54,6 +55,11 @@ class faro_api {
     repos             => 'main',
     required_packages => 'debian-keyring debian-archive-keyring',
     include_src       => false,
+  }
+  exec { 'faro_api_restart':
+    command     => 'supervisorctl restart faro_api',
+    path        => '/usr/local/bin:/usr/bin:/bin',
+    refreshonly => true,
   }
   supervisor::service {
     'faro_api':
