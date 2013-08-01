@@ -59,7 +59,7 @@ class ci_tools {
                       'external-monitor-job', 'git-client', 'ldap',
                       'maven-plugin', 'pam-auth', 'parameterized-trigger',
                       'ssh-credentials', 'ssh-slaves', 'postbuild-task',
-                      'scm-sync-configuration', 'git-notes', 'credentials',
+                      'git-notes', 'credentials',
                       'shiningpanda', 'ws-cleanup', 'multiple-scms']
   user { 'jenkins':
     ensure     => 'present',
