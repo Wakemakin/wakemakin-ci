@@ -2,7 +2,7 @@
 PCOUNT=`ps aux | grep faro_api | grep gunicorn | wc -l`
 RELEASE=`curl -s $2`
 TIMEOUT=0
-MAX_TIMEOUT=35
+MAX_TIMEOUT=60
 while [ $RELEASE -ne $1 ]; do
     sleep 1
     RELEASE=`curl -s $2`
